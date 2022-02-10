@@ -1,12 +1,13 @@
-// NeuralNet1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//Source: https://stackoverflow.com/questions/2019056/getting-a-simple-neural-network-to-work-from-scratch-in-c
-//By https://stackoverflow.com/users/24039/simon
+// NeuralNetwork.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
 
 #include <iostream>
+
 #include <sstream>
 #include <fstream>
-#include <string>
+
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -17,7 +18,6 @@ public:
 	{
 		m_epochs = epochs; // We set the private variable m_epochs to the user selected value
 		m_eta = eta;
-		
 	}
 	float netInput(vector<float> X)
 	{
@@ -25,14 +25,14 @@ public:
 		float probabilities = m_w[0]; // In this example I am adding the perceptron first
 		for (int i = 0; i < X.size(); i++)
 		{
-			probabilities += X[i] * m_w[i + 1]; // Notice that for the weights I am counting
+			probabilities += X[i] * m_w[i+1]; // Notice that for the weights I am counting
 			// from the 2nd element since w0 is the bias and I already added it first.
 		}
 		return probabilities;
 	}
 	int predict(vector<float> X)
 	{
-		return netInput(X) > 0 ? 1 : -1; //Step Function
+		return netInput(X) > 0 ? 1 : -1;
 	}
 	void fit(vector< vector<float> > X, vector<float> y)
 	{
@@ -47,9 +47,9 @@ public:
 			for (int j = 0; j < X.size(); j++) // Iterating though each vector in our training Matrix
 			{
 				float update = m_eta * (y[j] - predict(X[j])); //we calculate the change for the weights
-				for (int w = 1; w < m_w.size(); w++) { 
+				for (int w = 1; w < m_w.size(); w++) {
 					m_w[w] += update * X[j][w - 1];  // we update each weight by the update * the training sample
-					}
+				}
 				m_w[0] = update; // We update the Bias term and setting it equal to the update
 				errors += update != 0 ? 1 : 0;
 				cout << "Training: " << update << endl;
@@ -77,7 +77,7 @@ private:
 };
 
 
-vector<string> split(const string &s, char delim) {
+vector<string> split(const string& s, char delim) {
 	vector<string> result;
 	stringstream ss(s);
 	string item;
@@ -92,7 +92,7 @@ vector<string> split(const string &s, char delim) {
 
 int main()
 {
-    
+
 	vector<vector<float>> X;
 	vector<float> y;
 	string line;
@@ -100,20 +100,21 @@ int main()
 	ifstream myfile("test1.csv");
 	if (myfile.is_open())
 	{
-		vector<int> dataarr;
+		
 		while (getline(myfile, line))
 		{
+			vector<float> dataarr;
 			data = split(line, ',');
 			for (int i = 0; i < 4; i++)
 			{
-				dataarr.push_back(data[i]);
+				dataarr.push_back(stof(data[i]));
 				//cout << stof(data[i]);
 				cout << data[i] << " | ";
 			}
-			cout << data[5];
-			//X.push_back(dataarr);
-			//y.push_back(stof(data[5]));
-			cout << "X-" << endl;
+			cout << data[4] <<endl;
+			X.push_back(dataarr);
+			y.push_back(stof(data[4]));
+			dataarr.clear();
 		}
 		myfile.close();
 	}
@@ -123,10 +124,8 @@ int main()
 	}
 
 	cout << "Hello World!\n";
-	perceptron clf(0.1, 1000);
+	perceptron clf(1, 10);
 	clf.fit(X, y);
 	clf.printErrors();
 
 }
-
-
